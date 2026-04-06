@@ -444,8 +444,8 @@ def main():
     except Exception as e:
         log_traceback(e, "startup model load")
         log_error("Startup: FAILED to load default model", model=default_model, error=str(e))
-        # Still signal ready so Go server can start (may be retryable)
-        print(json.dumps({"event": "ready", "error": str(e)}), flush=True)
+        # Signal error so Go restarts Python instead of marking it alive with a broken model
+        print(json.dumps({"event": "error", "model": default_model, "error": str(e)}), flush=True)
 
     log_info("Entering command loop", stdin_fd=sys.stdin.fileno())
 

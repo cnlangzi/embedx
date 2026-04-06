@@ -306,6 +306,11 @@ func startPythonBackendLocked() error {
 			atomic.StoreInt32(&pythonAlive, 1)
 			break
 		}
+		if resp.Event == "error" {
+			errorf("Python backend error on startup", "error", resp.Error)
+			// Do NOT mark alive — let caller handle the error and trigger restart
+			break
+		}
 	}
 
 	return nil
